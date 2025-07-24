@@ -1,0 +1,10 @@
+services:
+  dev:
+    build:
+      context: ./.devcontainer
+      dockerfile: Dockerfile
+    volumes:
+      - .:/workspace
+    command: sleep infinity
+    environment:
+      - TERM=xterm-256color
