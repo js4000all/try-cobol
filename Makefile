@@ -1,28 +1,29 @@
 COBC := cobc
+
 SRC_DIR := src
-TEST_DIR := test
 BUILD_DIR := build
 
-TARGET := $(BUILD_DIR)/hello
-MAIN := $(SRC_DIR)/hello.cob
+COB_SOURCES := $(wildcard $(SRC_DIR)/*.cob)
+PROGRAMS := $(patsubst $(SRC_DIR)/%.cob,$(BUILD_DIR)/%,$(COB_SOURCES))
 
 COBCFLAGS := -x -free
 
-.PHONY: all run test clean rebuild dirs
+.PHONY: all list run clean rebuild dirs
 
-all: $(TARGET)
+all: $(PROGRAMS)
 
-$(TARGET): $(MAIN) | dirs
+$(BUILD_DIR)/%: $(SRC_DIR)/%.cob | dirs
 	$(COBC) $(COBCFLAGS) -o $@ $<
 
 dirs:
 	mkdir -p $(BUILD_DIR)
 
-run: all
-	./$(TARGET)
-
-test: all
-	./$(TARGET)
+list:
+	@echo "Sources:"
+	@for src in $(COB_SOURCES); do echo "  $$src"; done
+	@echo ""
+	@echo "Programs:"
+	@for program in $(PROGRAMS); do echo "  $$program"; done
 
 clean:
 	rm -rf $(BUILD_DIR)
